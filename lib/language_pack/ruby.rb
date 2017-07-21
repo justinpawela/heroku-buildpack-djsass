@@ -581,6 +581,7 @@ WARNING
 
         bundler_output = ""
         bundle_time    = nil
+        justin_vars = nil
         Dir.mktmpdir("libyaml-") do |tmpdir|
           libyaml_dir = "#{tmpdir}/#{LIBYAML_PATH}"
           install_libyaml(libyaml_dir)
@@ -608,6 +609,7 @@ WARNING
               bundler_output << pipe("#{bundle_command} --no-clean", out: "2>&1", env: env_vars, user_env: true)
             end
           end
+          justin_vars = env_vars
         end
 
         if $?.success?
@@ -623,6 +625,10 @@ WARNING
             end
           end
           @bundler_cache.store
+
+          topic("Converting Sass files in 'main' app")
+          pipe("sass --no-cache --sourcemap=none --style compressed --force --update main/static/",
+            out: "2>&1", env: justin_vars, user_env: true)
 
           # Keep gem cache out of the slug
           FileUtils.rm_rf("#{slug_vendor_base}/cache")

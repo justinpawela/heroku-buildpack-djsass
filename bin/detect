@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -f "$1/Gemfile" ]; then
-  echo "Ruby"
+if [ -f "$1/Gemfile" -a -f "$1/requirements.txt" ]; then
+  echo "Django/Sass"
   exit 0
 else
   echo "no"
